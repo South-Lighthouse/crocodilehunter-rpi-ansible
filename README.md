@@ -15,13 +15,14 @@ Ansible Playbook to install Crocodile Hunter on Raspberry Pi 4
    -  wigle_key
    -  ocid_key
    -  default_project_earfcns (in case you have this, the installation process will be more reliable)
-3. run ```ansible-playbook -i <IP Address>, playbook.yml```
+3. run ```ansible-playbook -i <IP Address>, playbook.yml``` (if is just one IP address the comma is mandatory to make the command work)
 4. Wait a little bit
 5. Test and profit!
 
 ## Known issues
 
 - Crocodile Hunter assumes that we have good GPS signal reception, if this is not the case, some processes can fail, especially the first run of the app, because it will try to get earfcns of the current location aquired with the GPS, so if it can't fix a location this process will last forever.
+- In some cases, running ```sudo apt upgrade``` on the RPi make it unable to boot after all the install process.
 
 # Todo
 
