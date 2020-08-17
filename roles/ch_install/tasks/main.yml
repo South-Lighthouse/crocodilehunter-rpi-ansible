@@ -1,0 +1,92 @@
+- name: Install dependencies
+  become: yes
+  apt:
+    state: present
+    pkg:
+      - cmake
+      - libfftw3-dev
+      - libmbedtls-dev
+      - libboost-program-options-dev
+      - libconfig++-dev
+      - libsctp-dev
+      - python3-dev
+      - python3-pip
+      - python3-scipy
+      - libpolarssl-dev
+      - jq
+      - libfftw3-dev
+      - libboost-dev
+      - gpsd
+      - gpsd-clients
+      - mariadb-server
+      - libmariadb-dev
+      - libitpp-dev
+      - librtlsdr-dev
+      - libuhd-dev
+      - libopenblas-dev
+      - libncurses5-dev
+      - libpcsclite-dev
+      - libatlas-base-dev
+      - python-pymysql # to operate database from ansible
+      - python3-pymysql # to operate database from ansible
+
+- name: Mariadb fix
+  become: yes
+  command: "ln -s /usr/bin/mariadb_config /usr/bin/mysql_config"
+  ignore_errors: yes
+
+- name: Clone Crocodile Hunter repo
+  git:
+    repo: "{{ repo }}"
+    dest: /home/pi/crocodilehunter
+
+- name: Prepare srsLTE
+  command: "git submodule init"
+  args:
+    chdir: "/home/pi/crocodilehunter/src/srsLTE/"
+
+- name: Get/Update srsLTE
+  command: "git submodule update"
+  args:
+    chdir: "/home/pi/crocodilehunter/src/srsLTE/"
+
+- name: Patch srsLTE to avoid error related to cabsf when building
+  lineinfile: 
+    path: /home/pi/crocodilehunter/src/srsLTE/srsue/src/phy/phch_worker.cc
+    regexp: '^(.*)cabsf(.*)$' 
+    line: '    ce_abs[g+i] = 20 * log10f(std::abs(std::complex<float>(ue_dl.ce_m[tx_antenna][rx_antenna][i])));'
+    backrefs: yes
+
+- name: Install pip dependencies
+  become: yes
+  command: "pip3 install -r src/requirements.txt"
+  args:
+    chdir: "/home/pi/crocodilehunter/"
+
+- name: Create database user with password and all database privileges and 'WITH GRANT OPTION'
+  become: yes
+  mysql_user:
+    name: "{{ database_user }}"
+    password: "{{ database_password }}"
+    priv: '*.*:ALL,GRANT'
+    state: present
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+
+- name: Copy config file
+  template:
+    src: ../templates/config.ini
+    dest: /home/pi/crocodilehunter/src/config.ini
+    owner: pi
+    group: pi
+    mode: '0755'
+
+- name: Bootstrap Chunter
+  command: "bash bootstrap.sh"
+  args:
+    chdir: "/home/pi/crocodilehunter/src"
+
+- name: Install Chunter as a service
+  command: "bash install.sh"
+  become: yes
+  args:
+    chdir: "/home/pi/crocodilehunter/src"

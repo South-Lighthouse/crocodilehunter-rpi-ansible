@@ -1,0 +1,22 @@
+- hosts:
+  gather_facts: false
+  vars:
+    - ansible_connection: ssh
+    - ansible_user: pi
+    - ansible_ssh_pass: raspberry
+    - repo: https://github.com/EFForg/crocodilehunter.git
+    - database_user: chunter
+    - database_password: imsicatcher
+    - gps_default: -33.4377, -70.6336 # change to coordinates depending on the monitored area. Example for Santiago de Chile
+    - wigle_name: AIC1234
+    - wigle_key: deadbeef
+    - ocid_key: 1312acab
+    - crash_timeout: 120 #suggested for RPi
+    - default_project: chunter
+    - default_project_earfcns: 3300,1125,1000,9610,9485,9360,2900,2300,3100 # set to empty to calculate them at install. Example for Chile
+    - run_us_centeric_heuristics: false # leave as false if outside of the USA
+  become_method: sudo
+  roles:
+    - rpi_config
+    - bladerf
+    - ch_install

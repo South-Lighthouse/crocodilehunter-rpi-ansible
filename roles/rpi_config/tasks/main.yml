@@ -1,0 +1,13 @@
+---
+# tasks file to setup rpi for Crocodile Hunter
+
+- name: Overclock rpi
+  become: yes
+  lineinfile:
+    path: /boot/config.txt
+    insertafter: '^\[pi4\]'
+    line: 'over_voltage=6arm_freq=2147'
+
+- name: Reboot the server and wait for it to come back up.
+  become: yes
+  reboot:

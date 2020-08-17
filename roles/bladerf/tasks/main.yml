@@ -1,0 +1,70 @@
+---
+# tasks file to install bladerf from source
+
+- name: Install dependencies
+  become: yes
+  apt:
+    state: present
+    pkg:
+      - git
+      - libusb-1.0-0-dev
+      - libusb-1.0-0
+      - build-essential
+      - cmake
+      - libncurses5-dev
+      - libtecla1
+      - libtecla-dev
+      - pkg-config
+      - wget
+      - acl
+
+- name: Ensure group "bladerf" exists
+  become: yes
+  group:
+    name: bladerf
+    state: present
+
+- name: adding existing user pi to group bladerf
+  become: yes
+  user:
+    name: pi
+    groups: bladerf 
+    append: yes
+
+- name: Clone BladeRF source code
+  git:
+    repo: "https://github.com/Nuand/bladeRF.git"
+    dest: /home/pi/bladerf
+
+- name: Create build dir
+  file:
+    path: /home/pi/bladerf/host/build
+    state: directory
+    owner: pi
+    mode: 0755
+
+- name: Build BladeRF
+  command: "cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DINSTALL_UDEV_RULES=ON ../ -DBLADERF_GROUP=bladerf"
+  args:
+    chdir: "/home/pi/bladerf/host/build"
+
+- name: Make BladeRF
+  command: "make"
+  args:
+    chdir: "/home/pi/bladerf/host/build"
+
+- name: Install BladeRF
+  become: yes
+  command: "make install"
+  args:
+    chdir: "/home/pi/bladerf/host/build"
+
+- name: Complete BladeRF install
+  become: yes
+  command: "ldconfig"
+  args:
+    chdir: "/home/pi/bladerf/host/build"
+
+- name: Reboot the server and wait for it to come back up. Just to not asking the user to (re)connect the radio
+  become: yes
+  reboot:
