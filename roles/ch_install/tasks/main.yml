@@ -90,3 +90,7 @@
   become: yes
   args:
     chdir: "/home/pi/crocodilehunter/src"
+
+- name: Reboot the server and wait for it to come back up. is expected that Crocodile Hunter starts working after this
+  become: yes
+  reboot:

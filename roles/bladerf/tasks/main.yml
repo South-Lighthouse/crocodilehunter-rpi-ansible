@@ -65,6 +65,6 @@
   args:
     chdir: "/home/pi/bladerf/host/build"
 
-- name: Reboot the server and wait for it to come back up. Just to not asking the user to (re)connect the radio
+- name: Reboot the server and wait for it to come back up. Just to avoid asking the user to (re)connect the radio
   become: yes
   reboot:

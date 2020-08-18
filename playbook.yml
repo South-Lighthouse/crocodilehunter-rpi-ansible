@@ -15,6 +15,9 @@
     - default_project: chunter
     - default_project_earfcns: 3300,1125,1000,9610,9485,9360,2900,2300,3100 # set to empty to calculate them at install. Example for Chile
     - run_us_centeric_heuristics: false # leave as false if outside of the USA
+    - configure_wifi: no
+    - wifi_ssid: super secure wifi
+    - wifi_pass: bad-password
   become_method: sudo
   roles:
     - rpi_config
