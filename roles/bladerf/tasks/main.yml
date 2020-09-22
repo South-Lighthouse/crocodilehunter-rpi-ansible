@@ -64,6 +64,18 @@
   command: "ldconfig"
   args:
     chdir: "/home/pi/bladerf/host/build"
+    
+- name: Download FPGA for x40
+  become: yes
+  command: "curl https://www.nuand.com/fpga/hostedx40-latest.rbf > hostedx40-latest.rbf"
+  args:
+    chdir: "/home/pi"
+    
+- name: Install FPGA in Blade x40
+  become: yes
+  command: "bladeRF-cli -v critical -l hostedx40-latest.rbf"
+  args:
+    chdir: "/home/pi"
 
 - name: Reboot the server and wait for it to come back up. Just to avoid asking the user to (re)connect the radio
   become: yes
