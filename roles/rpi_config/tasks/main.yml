@@ -21,26 +21,44 @@
     line: '127.0.0.1 localhost crocodilehunter'
     state: present
 
-- name: Configure Wifi
-  when: configure_wifi
-  become: yes
-  template:
-    src: ../templates/wpa_supplicant.conf
-    dest: /etc/wpa_supplicant/wpa_supplicant.conf
-    owner: root
-    group: root
-    mode: '0600'
+# - name: Set country for wifi
+#   when: configure_wifi
+#   become: yes
+#   command: "raspi-config nonint do_wifi_country \"{{ wifi_country }}\""
 
-- name: Unblock wifi interface with rfkill
-  when: configure_wifi
-  become: yes
-  command: rfkill unblock all
+# decomisionar
+# - name: Configure Wifi
+#   when: configure_wifi
+#   become: yes
+#   template:
+#     src: ../templates/wpa_supplicant.conf
+#     dest: /etc/wpa_supplicant/wpa_supplicant.conf
+#     owner: root
+#     group: root
+#     mode: '0600'
 
-- name: Activate wifi interface
-  when: configure_wifi
-  become: yes
-  command: ifconfig wlan0 up
+# - name: Insert network in wpa_supplicant
+#   when: configure_wifi
+#   become: yes
+#   blockinfile:
+#     path: /etc/wpa_supplicant/wpa_supplicant.conf
+#     block: |
+#       network={
+#           ssid="{{ wifi_ssid }}"
+#           psk="{{ wifi_pass }}"
+#       }
 
 - name: Reboot the server and wait for it to come back up.
   become: yes
   reboot:
+
+# not necesary if enabling country code for wifi?
+# - name: Unblock wifi interface with rfkill
+#   when: configure_wifi
+#   become: yes
+#   command: rfkill unblock all
+
+# - name: Activate wifi interface
+#   when: configure_wifi
+#   become: yes
+#   command: ifconfig wlan0 up

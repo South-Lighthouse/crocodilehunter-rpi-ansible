@@ -5,6 +5,7 @@
     - ansible_user: pi
     - ansible_ssh_pass: raspberry
     - repo: https://github.com/EFForg/crocodilehunter.git
+    - repo_version: master
     - database_user: chunter
     - database_password: imsicatcher
     - gps_default: -33.4377, -70.6336 # change to coordinates depending on the monitored area. Example for Santiago de Chile

@@ -39,6 +39,7 @@
   git:
     repo: "{{ repo }}"
     dest: /home/pi/crocodilehunter
+    version: "{{ repo_version }}"
 
 - name: Prepare srsLTE
   command: "git submodule init"
