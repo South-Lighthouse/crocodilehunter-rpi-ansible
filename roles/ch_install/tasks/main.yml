@@ -50,12 +50,12 @@
   args:
     chdir: "/home/pi/crocodilehunter/src/srsLTE/"
 
-- name: Patch srsLTE to avoid error related to cabsf when building
-  lineinfile: 
-    path: /home/pi/crocodilehunter/src/srsLTE/srsue/src/phy/phch_worker.cc
-    regexp: '^(.*)cabsf(.*)$' 
-    line: '    ce_abs[g+i] = 20 * log10f(std::abs(std::complex<float>(ue_dl.ce_m[tx_antenna][rx_antenna][i])));'
-    backrefs: yes
+#- name: Patch srsLTE to avoid error related to cabsf when building - patched in source
+#  lineinfile: 
+#    path: /home/pi/crocodilehunter/src/srsLTE/srsue/src/phy/phch_worker.cc
+#    regexp: '^(.*)cabsf(.*)$' 
+#    line: '    ce_abs[g+i] = 20 * log10f(std::abs(std::complex<float>(ue_dl.ce_m[tx_antenna][rx_antenna][i])));'
+#    backrefs: yes
 
 - name: Install pip dependencies
   become: yes
