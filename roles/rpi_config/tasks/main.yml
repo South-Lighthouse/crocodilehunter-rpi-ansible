@@ -5,8 +5,12 @@
   become: yes
   lineinfile:
     path: /boot/config.txt
-    insertafter: '^\[pi4\]'
-    line: 'over_voltage=6arm_freq=2147'
+    insertafter: '^#uncomment to overclock the arm. 700 MHz is the default.'
+    line: "{{ item }}"
+  loop:
+    - "over_voltage=6"
+    - "arm_freq=1750"
+    - "gpu_freq=750"
 
 - name: Change hostname
   become: yes
@@ -21,44 +25,12 @@
     line: '127.0.0.1 localhost crocodilehunter'
     state: present
 
-# - name: Set country for wifi
-#   when: configure_wifi
-#   become: yes
-#   command: "raspi-config nonint do_wifi_country \"{{ wifi_country }}\""
-
-# decomisionar
-# - name: Configure Wifi
-#   when: configure_wifi
-#   become: yes
-#   template:
-#     src: ../templates/wpa_supplicant.conf
-#     dest: /etc/wpa_supplicant/wpa_supplicant.conf
-#     owner: root
-#     group: root
-#     mode: '0600'
-
-# - name: Insert network in wpa_supplicant
-#   when: configure_wifi
-#   become: yes
-#   blockinfile:
-#     path: /etc/wpa_supplicant/wpa_supplicant.conf
-#     block: |
-#       network={
-#           ssid="{{ wifi_ssid }}"
-#           psk="{{ wifi_pass }}"
-#       }
+- name: Apt update & upgrade
+  become: yes
+  apt:
+    update_cache: yes
+    upgrade: yes
 
 - name: Reboot the server and wait for it to come back up.
   become: yes
   reboot:
-
-# not necesary if enabling country code for wifi?
-# - name: Unblock wifi interface with rfkill
-#   when: configure_wifi
-#   become: yes
-#   command: rfkill unblock all
-
-# - name: Activate wifi interface
-#   when: configure_wifi
-#   become: yes
-#   command: ifconfig wlan0 up

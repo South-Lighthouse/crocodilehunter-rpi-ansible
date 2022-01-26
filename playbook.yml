@@ -4,21 +4,26 @@
     - ansible_connection: ssh
     - ansible_user: pi
     - ansible_ssh_pass: raspberry
-    - repo: https://github.com/EFForg/crocodilehunter.git
+    - repo: https://github.com/South-Lighthouse/crocodilehunter.git # Contains a patch for specific BladeRF radios
     - repo_version: master
     - database_user: chunter
     - database_password: imsicatcher
-    - gps_default: -33.4377, -70.6336 # change to coordinates depending on the monitored area. Example for Santiago de Chile
-    - wigle_name: AIC1234
-    - wigle_key: deadbeef
-    - ocid_key: 1312acab
+    - gps_default: -33.45, -70.62 # change to coordinates depending on the monitored area. Example for Santiago de Chile
+    - wigle_name: AIDyournamehere
+    - wigle_key: eyourkeyhere
+    - ocid_key: acyourkeyhere
     - crash_timeout: 120 #suggested for RPi
     - default_project: chunter
     - default_project_earfcns: 3300,1125,1000,9610,9485,9360,2900,2300,3100 # set to empty to calculate them at install. Example for Chile
     - run_us_centeric_heuristics: false # leave as false if outside of the USA
-    - configure_wifi: no
-    - wifi_ssid: super secure wifi
-    - wifi_pass: bad-password
+    - check_geographic_codes: false
+    - expected_mccs: 730 # example for Chile
+    - expected_mncs: 00,01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,19 # example for Chile
+    - api_host: example.com # or IP address
+    - api_port: 443
+    - api_contact: name@example.com
+    - blade_firmware_url: https://www.nuand.com/fx3/bladeRF_fw_v2.3.2.img # latest version tested successfully
+    - blade_fpga_url: https://www.nuand.com/fpga/v0.11.0/hostedx40.rbf # latest version tested successfully
   become_method: sudo
   roles:
     - rpi_config

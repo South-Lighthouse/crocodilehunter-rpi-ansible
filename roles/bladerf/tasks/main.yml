@@ -17,6 +17,8 @@
       - pkg-config
       - wget
       - acl
+      - python3-pybind11
+      - libsndfile1-dev
 
 - name: Ensure group "bladerf" exists
   become: yes
@@ -67,13 +69,29 @@
     
 - name: Download FPGA for x40
   become: yes
-  command: "curl https://www.nuand.com/fpga/hostedx40-latest.rbf > hostedx40-latest.rbf"
+  command: "curl {{ blade_fpga_url }} -o hostedx40-latest.rbf"
   args:
     chdir: "/home/pi"
-    
+
+- name: Download blade firmware
+  become: yes
+  command: "curl {{ blade_firmware_url }} -o bladeRF_fw_latest.img"
+  args:
+    chdir: "/home/pi"
+
+- name: Pause for 5 minutes to build app cache
+  pause:
+    seconds: 10
+
 - name: Install FPGA in Blade x40
   become: yes
   command: "bladeRF-cli -v critical -l hostedx40-latest.rbf"
+  args:
+    chdir: "/home/pi"
+
+- name: Install Firmware in Blade x40
+  become: yes
+  command: "bladeRF-cli -f bladeRF_fw_latest.img"
   args:
     chdir: "/home/pi"
 
